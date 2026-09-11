@@ -136,6 +136,22 @@
   .checklist li::before{content:"☐ ";color:var(--accent)}
   .checklist li.checked{color:var(--good)}
   .checklist li.checked::before{content:"☑ ";color:var(--good)}
+  /* ---------- 移动端适配（≤640px 手机） ---------- */
+  @media(max-width:640px){
+    main{padding:20px 16px 96px}
+    .card{padding:20px 15px}
+    .widget{padding:15px 13px}
+    h1{font-size:23px}
+    h2{font-size:19px}
+    h3{font-size:16px}
+    .cover h1{font-size:27px}
+    .cover .lead{font-size:15.5px}
+    table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    th,td{padding:8px 10px}
+    code{overflow-wrap:anywhere}
+    pre{font-size:12px;padding:13px}
+    .lessonnav{flex-direction:column}
+  }
 </style>
 </head>
 <body>
