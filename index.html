@@ -107,7 +107,7 @@
   .lessonnav .btn{flex:1;text-align:center}
   .done-btn{margin-top:6px}
   /* 底部常驻上/下章导航（解决手机端侧栏隐藏后无法跳章） */
-  .bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(10,13,31,.92);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
+  .bottomnav{position:fixed;left:0;right:0;top:auto;bottom:0;width:auto;height:auto;z-index:30;display:flex;align-items:center;gap:10px;padding:10px 14px;padding-bottom:calc(10px + env(safe-area-inset-bottom));background:rgba(10,13,31,.92);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
   .bottomnav button{flex:1;padding:11px 8px;border:1px solid var(--line);background:var(--accent);color:#0a0d1f;border-radius:12px;font-weight:600;font-size:14px;cursor:pointer}
   .bottomnav button:disabled{opacity:.35;cursor:not-allowed;background:var(--panel2);color:var(--muted)}
   .bottomnav #menuBtn{flex:0 0 auto;padding:11px 14px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:12px;font-weight:600;font-size:14px;cursor:pointer}
@@ -150,7 +150,6 @@
     th,td{padding:8px 10px}
     code{overflow-wrap:anywhere}
     pre{font-size:12px;padding:13px}
-    .lessonnav{flex-direction:column}
   }
 </style>
 </head>
