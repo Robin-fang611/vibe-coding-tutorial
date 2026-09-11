@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>零基础 Vibe Coding 实战营 · 用 WorkBuddy 做出你的作品集网站</title>
+<style>
+  :root{
+    --bg:#0b0e22; --panel:#151833; --panel2:#1d2147; --ink:#eef1ff; --muted:#9aa3c7;
+    --accent:#7c8cff; --accent2:#36d1b7; --warn:#ffb454; --good:#4ade80; --bad:#ff6b6b;
+    --line:#2a2f57; --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",Segoe UI,Roboto,sans-serif;
+    background:linear-gradient(160deg,#090c1f,#121537 60%,#0a0d20);
+    color:var(--ink); line-height:1.8; font-size:16px;}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{background:#0a0d1f;border:1px solid var(--line);padding:2px 7px;border-radius:6px;font-size:13.5px;color:#cdd6ff;font-family:"SF Mono",Consolas,monospace}
+  pre{background:#080b1a;border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:13px;line-height:1.6}
+  pre code{background:none;border:0;padding:0;color:#d7dcff}
+  .topbar{position:sticky;top:0;z-index:30;height:6px;background:var(--line)}
+  .topbar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s}
+  .wrap{display:flex;max-width:1280px;margin:0 auto}
+  /* sidebar */
+  nav{width:300px;flex:none;padding:22px 14px;position:sticky;top:6px;align-self:flex-start;height:calc(100vh - 6px);overflow:auto}
+  nav .brand{font-weight:800;font-size:17px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  nav .sub{color:var(--muted);font-size:12px;margin:2px 0 14px}
+  nav .ptitle{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:10px 4px 6px}
+  nav ol{list-style:none;margin:0;padding:0}
+  nav li button{width:100%;text-align:left;background:transparent;border:0;color:var(--muted);padding:9px 10px;border-radius:10px;cursor:pointer;font-size:13.5px;display:flex;gap:9px;align-items:flex-start;transition:.15s;line-height:1.4}
+  nav li button:hover{background:var(--panel);color:var(--ink)}
+  nav li button.active{background:var(--panel2);color:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+  .num{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:700}
+  nav li.done .num{background:var(--good);border-color:var(--good);color:#06210f}
+  nav li button span.txt{flex:1}
+  nav li button span.dur{font-size:10.5px;color:var(--muted);flex:none;align-self:center}
+  nav li.done button span.dur{color:var(--good)}
+  .pct{margin-top:14px;font-size:12px;color:var(--muted)}
+  .reset{margin-top:6px;background:transparent;border:1px solid var(--line);color:var(--muted);font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer}
+  /* main */
+  main{flex:1;min-width:0;padding:26px 34px 90px}
+  section{display:none;animation:fade .3s ease}
+  section.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .crumb{font-size:13px;color:var(--muted);margin-bottom:6px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px 30px;margin-bottom:20px}
+  h1{font-size:28px;line-height:1.3;margin:.1em 0 .3em}
+  h2{font-size:21px;margin:1.5em 0 .5em;padding-left:12px;border-left:4px solid var(--accent)}
+  h3{font-size:17px;margin:1.2em 0 .4em;color:#dfe4ff}
+  p{margin:.7em 0}
+  ul,ol{margin:.6em 0;padding-left:1.4em}
+  li{margin:.35em 0}
+  .objectives{background:linear-gradient(135deg,rgba(124,140,255,.14),rgba(54,209,183,.08));border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:14px 0}
+  .objectives b{color:var(--accent2)}
+  .tip{background:linear-gradient(135deg,rgba(124,140,255,.10),rgba(54,209,183,.06));border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:13px 16px;margin:15px 0}
+  .tip b{color:var(--accent2)}
+  .tip.warn{border-left-color:var(--warn);background:linear-gradient(135deg,rgba(255,180,84,.12),rgba(255,180,84,.03))}
+  .tip.good{border-left-color:var(--good);background:linear-gradient(135deg,rgba(74,222,128,.12),rgba(74,222,128,.03))}
+  .analogy{font-style:italic;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:var(--panel2)}
+  .pill{display:inline-block;font-size:11.5px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin:0 4px 4px 0}
+  .pill.s{background:rgba(54,209,183,.12);color:var(--accent2);border-color:transparent}
+  .pill.t{background:rgba(124,140,255,.14);color:var(--accent);border-color:transparent}
+  .pill.p{background:rgba(255,180,84,.14);color:var(--warn);border-color:transparent}
+  /* cover */
+  .cover{background:radial-gradient(120% 120% at 0% 0%,rgba(124,140,255,.25),transparent 50%),radial-gradient(120% 120% at 100% 100%,rgba(54,209,183,.22),transparent 50%),var(--panel);border:1px solid var(--line);border-radius:20px;padding:40px 38px;margin-bottom:20px}
+  .cover h1{font-size:34px}
+  .cover .lead{font-size:17px;color:#d6dbff;max-width:760px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+  .meta .m{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--muted)}
+  .meta .m b{color:var(--ink);display:block;font-size:15px}
+  .roadmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-top:8px}
+  .rm{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px}
+  .rm b{color:var(--accent2);display:block;margin-bottom:3px}
+  /* widgets */
+  .widget{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:18px;margin:18px 0}
+  .widget h3{margin-top:0}
+  label.f{display:block;font-size:13px;color:var(--muted);margin:12px 0 4px}
+  input[type=text],textarea,select{width:100%;background:#0a0d1f;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit}
+  textarea{resize:vertical;min-height:88px;font-family:"SF Mono",Consolas,monospace}
+  #sb{min-height:230px}
+  @media(max-width:980px){#sb{min-height:200px}}
+  .btn{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#0a0d1f;border:0;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:14px}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);font-weight:600}
+  .btn:active{transform:translateY(1px)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .out{background:#080b1a;border:1px dashed var(--line);border-radius:10px;padding:14px;margin-top:12px;white-space:pre-wrap;font-family:"SF Mono",Consolas,monospace;font-size:13px;color:#cdd6ff}
+  .sandbox{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:980px){.sandbox{grid-template-columns:1fr}nav{display:none}}
+  .sandbox iframe{width:100%;height:330px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .chip{background:#0a0d1f;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:12.5px;cursor:pointer}
+  .chip:hover{border-color:var(--accent)}
+  .quiz-q{margin:16px 0}
+  .opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .opt{border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:14px}
+  .opt:hover{border-color:var(--accent)}
+  .opt.correct{border-color:var(--good);background:rgba(74,222,128,.1)}
+  .opt.wrong{border-color:var(--bad);background:rgba(255,107,107,.1)}
+  .fb{margin-top:8px;font-size:13.5px}
+  /* lesson nav */
+  .lessonnav{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+  .lessonnav .btn{flex:1;text-align:center}
+  .done-btn{margin-top:6px}
+  /* 底部常驻上/下章导航（解决手机端侧栏隐藏后无法跳章） */
+  .bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(10,13,31,.92);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
+  .bottomnav button{flex:1;padding:11px 8px;border:1px solid var(--line);background:var(--accent);color:#0a0d1f;border-radius:12px;font-weight:600;font-size:14px;cursor:pointer}
+  .bottomnav button:disabled{opacity:.35;cursor:not-allowed;background:var(--panel2);color:var(--muted)}
+  .bottomnav #menuBtn{flex:0 0 auto;padding:11px 14px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:12px;font-weight:600;font-size:14px;cursor:pointer}
+  .chapmenu{display:none;position:fixed;left:0;right:0;bottom:60px;z-index:29;max-height:62vh;overflow:auto;background:rgba(10,13,31,.97);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:10px 12px 16px}
+  .chapmenu.open{display:block}
+  .chapmenu button{display:block;width:100%;text-align:left;background:transparent;border:0;color:var(--ink);padding:11px 12px;border-radius:10px;font-size:14px;cursor:pointer}
+  .chapmenu button:hover{background:var(--panel2)}
+  .chapmenu button.reset{margin-top:8px;color:var(--warn);border-top:1px solid var(--line);border-radius:0}
+  .chapoverlay{display:none;position:fixed;inset:0;z-index:28;background:rgba(0,0,0,.45)}
+  .chapmenu.open+.chapoverlay{display:block}
+  @media(min-width:981px){.bottomnav{display:none}.chapmenu{left:max(280px,calc(50% - 360px));right:max(0px,calc(50% - 640px))}}
+  /* glossary */
+  .gloss{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:980px){.gloss{grid-template-columns:1fr}}
+  .gloss div{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px}
+  .gloss b{color:var(--accent2)}
+  /* completion */
+  .cert{background:linear-gradient(135deg,rgba(124,140,255,.18),rgba(54,209,183,.14));border:2px dashed var(--accent2);border-radius:18px;padding:30px;text-align:center}
+  .cert .seal{font-size:46px}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--panel2);border:1px solid var(--line);padding:12px 18px;border-radius:12px;opacity:0;transition:.3s;z-index:50;font-size:14px}
+  @media(max-width:980px){.toast{bottom:74px}}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .footer-note{color:var(--muted);font-size:12.5px;text-align:center;margin-top:26px;line-height:1.7}
+  details summary{cursor:pointer;color:var(--accent2);font-weight:600;margin:10px 0}
+  .checklist li{list-style:none;margin:6px 0;cursor:pointer;user-select:none}
+  .checklist li::before{content:"☐ ";color:var(--accent)}
+  .checklist li.checked{color:var(--good)}
+  .checklist li.checked::before{content:"☑ ";color:var(--good)}
+</style>
+</head>
+<body>
+<div class="topbar"><i id="bar"></i></div>
+<div class="wrap">
+<nav>
+  <div class="brand">🚀 Vibe Coding 实战营</div>
+  <div class="sub">零基础 · 14 章必做 + 1 章可选 + 1 篇导言</div>
+  <div class="ptitle">课程目录</div>
+  <ol id="navlist"></ol>
+  <div class="pct" id="pct">进度 0 / 14（第 11 章可选）</div>
+  <button class="reset" id="reset">重置学习进度</button>
+  <div style="margin-top:8px;font-size:11.5px;color:var(--muted)">进度只保存在当前浏览器，换设备或清缓存会丢失，建议学完再关。</div>
+</nav>
+
+<main>
+  <!-- 封面 -->
+  <section id="s0" class="active">
+    <div class="cover">
+      <div style="font-size:40px">🎓</div>
+      <h1>零基础 Vibe Coding 实战营</h1>
+      <p class="lead">不会写代码？你也能做出一个真正上线、别人能访问的个人作品集网站。本课程用 <b>WorkBuddy</b> 当主线，借鉴多门优秀开源教程的教法，带你从"完全不懂"走到"理解并部署"。</p>
+      <div class="meta">
+        <div class="m"><b>14 章必做 + 1 章可选 + 1 篇导言</b>系统入门路径</div>
+        <div class="m"><b>零基础</b>无需编程基础</div>
+        <div class="m"><b>约 2.5–3 小时</b>总学习量</div>
+        <div class="m"><b>主线工具</b>WorkBuddy（沙箱型）</div>
+        <div class="m"><b>成果</b>上线作品集 + 看懂代码</div>
+      </div>
+      <div class="tip warn" style="margin-top:18px"><b>⚠ 先一句话定调：</b>全程 99% 的内容手机或电脑在浏览器里都能学。<b>只有「不走 14.2 路线 0」时才需要电脑：</b>先 6.6 存盘、再 14.3/14.4 上传。<b>好消息：</b>如果你在第 14 章只用 <b>14.2 路线 0（WorkBuddy 一键部署）成功拿到网址，连电脑都不用</b>，纯手机也能零电脑毕业（此时可跳过 6.6/14.3/14.4）。即便需要电脑，也可以先一路用手机学到第 6 章"体验生成网站"，保存和部署等借到电脑时再做，完全不影响理解。</div>
+      <h2 style="border:0;padding:0">🧭 你的学习路线图</h2>
+      <div class="roadmap">
+        <div class="rm"><b>认知篇</b>什么是 Vibe Coding、计算机常识、零安装起步</div>
+        <div class="rm"><b>工具篇</b>三类 AI 工具对比、写好 Prompt</div>
+        <div class="rm"><b>方法篇</b>借鉴开源教程，站在巨人肩膀上加速</div>
+        <div class="rm"><b>实战篇</b>生成→读懂代码→借鉴开源模板→迭代</div>
+        <div class="rm"><b>上线篇</b>专业化、免费部署、调试避坑、结业</div>
+      </div>
+      <div class="tip" style="margin-top:22px"><b>本课程借鉴的开源教程（教法与结构）：</b>freeCodeCamp（项目驱动）、The Odin Project（做真实项目）、CS50（计算思维与比喻教学）、MDN Web Docs（权威精确）、菜鸟教程 / 廖雪峰教程（中文零基础友好）。我们取其"循序渐进 + 动手优先 + 概念先行"的精华，版权与内容仍归原作者，本教程为教学改编。</div>
+      <div class="row" style="margin-top:20px">
+        <button class="btn" onclick="go(1)">▶ 开始第一关</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第1章 -->
+  <section id="s1">
+    <div class="card">
+      <div class="crumb">课程 / 认知篇</div>
+      <h1>第 1 章 · 课程导论：什么是 Vibe Coding</h1>
+      <div class="objectives">🎯 <b>本章学习目标：</b>能用自己的话解释 Vibe Coding；说清它和传统学编程的区别；破除"完全不用动脑"的误解；建立最基础的计算思维。</div>
+
+      <h2>1.1 一个真实的场景</h2>
+      <p>小林想转行做产品经理，想做个作品集网站投简历，但"我从没写过代码"。过去这意味着：先学半年编程，再学框架，再学部署——大多数人卡在第 2 周就放弃了。</p>
+      <p>现在，小林打开 WorkBuddy，输入：<span class="analogy">"帮我做一个个人作品集单页，我叫小林，想转行做产品经理，要简洁专业风格。"</span> 几十秒后，一个能看的网站出现了。她再一句句提修改，最后免费上线。这就是 Vibe Coding。</p>
+
+      <h2>1.2 它到底是什么</h2>
+      <p>你可以这样理解：<b>AI 就是一个能和你打字聊天的程序</b>。你用平时说话的中文描述想要什么，它帮你把代码写出来；你看着效果用大白话提意见，它再改。你<b>完全不需要先学编程语法</b>。</p>
+      <div class="tip"><b>一句话定义：</b>Vibe Coding = 你当产品经理 + 验收员，AI 当程序员。你负责"想清楚要什么 + 判断好不好"，AI 负责"把它写成能运行的代码"。</div>
+
+      <h2>1.3 它 vs 传统学编程（诚实对比）</h2>
+      <table>
+        <tr><th>维度</th><th>传统路径</th><th>Vibe Coding</th></tr>
+        <tr><td>顺序</td><td>语法→框架→项目（易半途而废）</td><td>先做出来→遇到不懂再补原理</td></tr>
+        <tr><td>门槛</td><td>常卡在"环境配置"</td><td>很多工具零安装，打开即用</td></tr>
+        <tr><td>核心能力</td><td>写代码</td><td>表达需求 + 验收效果</td></tr>
+        <tr><td>短板</td><td>慢但基础扎实</td><td>快但需懂"怎么问"与基本原理</td></tr>
+      </table>
+      <div class="tip warn"><b>借鉴 The Odin Project 的诚实：</b>Vibe Coding 不让你"瞬间变成工程师"，但它让你从"被技术拒绝的人"变成"能用技术实现想法的人"。这正是零基础最需要的突破口。</div>
+
+      <h2>1.4 常见误解</h2>
+      <ul>
+        <li>❌ "完全不用动脑" → 错。你越能说清要什么，结果越好。</li>
+        <li>❌ "以后不用学编程了" → 错。懂原理能让你指挥得更准、排错更快。</li>
+        <li>❌ "AI 写错的也要照收" → 错。你是验收员，不对就让它改。</li>
+      </ul>
+
+      <h2>1.5 计算思维启蒙（借鉴 CS50）</h2>
+      <p>CS50 最强调的一点：编程本质是<b>把模糊的目标拆成清晰的步骤</b>。Vibe Coding 也一样——你给 AI 的需求，越接近"步骤化"，它越稳。</p>
+      <div class="tip"><b>小练习（热身用，不强求）：</b>把你"想要的作品集"先拆成几个模块（例如：自我介绍、关于我、技能、联系方式）写在纸上，心里有个数即可。<b>第 5 章的需求生成器会自动帮你组织成发给 AI 的文案</b>——所以不用怕"白写"；本章拆模块只是让你提前想清楚到底要什么，第 6 章实战生成时也可对照检查。</div>
+      <button class="btn done-btn" onclick="markDone(1)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第2章 -->
+  <section id="s2">
+    <div class="card">
+      <div class="crumb">课程 / 认知篇</div>
+      <h1>第 2 章 · 计算机常识速览（原理基底）</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>理解"项目=文件夹"、"网页怎么跑起来"、HTML/CSS/JS 三剑客各自干嘛、本地与线上的区别；记住本章术语表。</div>
+      <div class="tip"><b>写给纯小白：</b>本课程假设你没有任何基础。任何专业名词（服务器、命令行、GitHub、API……）第一次出现，都会用大白话解释。看到不懂的词先别慌，往下读就有答案——你不是一个人在面对这些词。</div>
+
+      <h2>2.1 你的项目，就是一个文件夹</h2>
+      <p>你在电脑里建过文件夹吧？一个网站项目，本质就是一个<b>文件夹</b>，里面装着若干个<b>文件</b>：</p>
+      <pre><code>我的作品集/
+├─ index.html   ← 主页（网站的大门，默认打开它）
+├─ style.css    ← 样式（颜色、排版、好不好看）
+└─ script.js    ← 交互（点击、动画等"会动"的部分）</code></pre>
+      <div class="tip"><b>原理：</b>电脑里一切都是"文件"。代码不是魔法，就是带特殊语法的文本文件，用对的软件打开就会"活"起来。</div>
+
+      <h2>2.2 网页是怎么跑起来的（借鉴 MDN）</h2>
+      <p>你每天刷的网页，背后是：浏览器（Chrome/Safari）向一台"服务器"发出请求，服务器把 <code>index.html</code> 发回来，浏览器再把它<b>画</b>出来。</p>
+      <div class="tip"><b>类比（借鉴 CS50 比喻法）：</b>服务器像餐厅厨房，<code>index.html</code> 像菜谱，浏览器是服务员——把菜谱（代码）端给你，并按菜谱把"菜"（页面）做出来摆在你面前。</div>
+
+      <h2>2.3 三剑客：HTML / CSS / JavaScript</h2>
+      <table>
+        <tr><th>角色</th><th>干嘛的</th><th>生活类比</th></tr>
+        <tr><td><b>HTML</b></td><td>结构 / 内容（有哪些块、什么文字）</td><td>房子的<b>框架</b>与户型图</td></tr>
+        <tr><td><b>CSS</b></td><td>样式 / 长相（颜色、字体、间距）</td><td>房子的<b>装修</b>（刷墙、摆家具）</td></tr>
+        <tr><td><b>JS</b></td><td>交互 / 行为（点击、切换）</td><td>房子的<b>电路与开关</b></td></tr>
+      </table>
+      <div class="tip"><b>记住这个比喻，全程好用：</b>改文字→动 HTML；改好看→动 CSS；改"会动"→动 JS。</div>
+
+      <h2>2.4 本地 vs 线上</h2>
+      <ul>
+        <li><b>本地（localhost）：</b>只在你自己电脑能看，像在自家厨房试菜。</li>
+        <li><b>线上（公网 / 域名）：</b>任何人输入网址都能看，像把餐厅开到大街上。</li>
+      </ul>
+
+      <h2>2.5 术语表（建议收藏）</h2>
+      <div class="gloss">
+        <div><b>预览 Preview：</b>变成最终版前先看效果。</div>
+        <div><b>部署 Deploy：</b>把网站放到公网，让别人能访问。</div>
+        <div><b>响应式：</b>同一套代码手机和电脑都好看。</div>
+        <div><b>Prompt：</b>你给 AI 的"需求指令"，最值钱的技能。</div>
+        <div><b>静态网站：</b>纯 HTML/CSS/JS，不需数据库，最易部署。</div>
+        <div><b>服务器：</b>由服务商管理的、24 小时开机的公共电脑，你只往里放文件。</div>
+        <div><b>API：</b>让不同程序互相"对话"的接口（像服务员去厨房传菜）；<b>API 密钥</b>相当于程序的"密码"，用来授权调用服务。</div>
+        <div><b>内联 CSS：</b>把样式直接写在网页文件里（不单独建样式文件），单文件更方便分享。</div>
+      </div>
+
+      <h2>2.6 检查点</h2>
+      <div class="widget" id="quiz1"></div>
+      <button class="btn done-btn" onclick="markDone(2)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第3章 -->
+  <section id="s3">
+    <div class="card">
+      <div class="crumb">课程 / 认知篇</div>
+      <h1>第 3 章 · 你的"工作室"：零安装起步</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>理解为什么零基础不必先装软件；认识浏览器即工作台；理解"沙箱"是什么；完成第一次打开 WorkBuddy 并发消息。</div>
+
+      <h2>3.1 为什么不用先装一堆软件</h2>
+      <p>传统学编程第一关往往是：装编辑器、装运行环境、配路径……一步报错就劝退。Vibe Coding 的沙箱型工具把这些都藏起来了——<b>打开网页就能用</b>。</p>
+
+      <h2>3.2 浏览器就是你的工作台</h2>
+      <p>你不需要装专门的写代码软件，也<b>不用碰那种叫"命令行"（黑底白字、靠打字输指令的窗口）的工具</b>——本课程用不上它。WorkBuddy 这样的工具在浏览器里提供：聊天框 + 代码生成 + 实时预览。你看到的成果，直接在网页里呈现。</p>
+
+      <h2>3.3 沙箱是什么</h2>
+      <div class="tip"><b>原理：</b>沙箱（Sandbox）是一块被隔离的安全空间。AI 在这里生成和运行代码，<b>不碰你电脑的真实文件</b>。所以新手随便试、错了点一下重来，不用担心搞坏系统。这也是我们推荐零基础从沙箱型起步的原因。</div>
+
+      <h2>3.4 先搞懂：AI 聊天助手长啥样</h2>
+      <p>如果你从没用过 AI 工具，别慌，它比想象中简单：</p>
+      <ul>
+        <li><b>它是什么：</b>像一个"能聊天、还能帮你写东西"的智能助手。你在输入框打字、按发送，它就回你一段话——可能是人话，也可能是代码。</li>
+        <li><b>WorkBuddy 界面大概是：</b>一边是<b>聊天框</b>（你发需求、它回复），另一边是<b>网站预览</b>（它生成的东西实时显示在那里）。你全程看着预览做判断。</li>
+        <li><b>它不会害你，但结果要你验收：</b>它给的东西不一定一次就对，不对你就用大白话让它改，就像指挥一个听话但偶尔犯迷糊的同事。</li>
+      </ul>
+
+      <h2>3.5 动手：第一次打开 WorkBuddy</h2>
+      <ol>
+        <li>打开 <a href="https://www.workbuddy.ai" target="_blank" rel="noopener">WorkBuddy</a>（本教程以它为例；用其他沙箱型工具也可以，但界面可能不同，<b>均以官网当前页面为准</b>）。<b>它可免费使用</b>，本课程涉及的功能都不收费，注册也只需邮箱，不涉及信用卡。</li>
+        <li>注册 / 登录：具体登录方式<b>以 WorkBuddy 当前页面为准</b>（邮箱最常见，也可能支持微信 / 谷歌等，哪种都行，<b>不需要信用卡</b>）。登录后，找界面上带"＋"或"新对话 / 新建对话"字样的按钮（通常在左侧栏或顶部），点一下就会开一个空白聊天窗口——就像新建一个微信聊天。</li>
+        <li>先发一句打招呼的话，比如：<code>你好，我是零基础，想做个作品集网站，你待会教我</code>。</li>
+      </ol>
+      <div class="tip good"><b>目标达成自检：</b>你能看到 AI 回复了，并且界面上有"输入区 + 发送按钮 + 历史消息"。这就算"工作室"搭好了。<b>做完这步，回到本教程点「✓ 完成本章」继续往下学～</b></div>
+      <button class="btn done-btn" onclick="markDone(3)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第4章 -->
+  <section id="s4">
+    <div class="card">
+      <div class="crumb">课程 / 工具篇</div>
+      <h1>第 4 章 · 工具全景：三类 AI 编程工具对比</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>能说出三档工具（沙箱型/终端型/插件型）的差异与适用人群；理解"插件型"是指插件化架构（典型示意：DeepSeek Harness、Pi Agent，本课不做、仅科普）；根据自己情况选对起步工具。</div>
+
+      <h2>4.1 三档工具一览（按"运行形态 / 架构"分，不是质量高低）</h2>
+      <div class="tip"><b>本节仅科普，零基础可放心跳过、直接看 4.3 第一条。</b>你只要记住"用沙箱型（WorkBuddy）"就够了，下面两种（终端型、插件型）是给更进阶的人准备的，<b>不用现在搞懂、更不用现在去用</b>。</div>
+      <table>
+        <tr><th>档位</th><th>运行形态 / 架构</th><th>代表工具</th><th>适合谁</th></tr>
+        <tr><td><span class="pill s">沙箱型</span></td><td>在隔离的云端/浏览器<b>沙箱</b>里运行，零安装，<b>不碰你电脑</b></td><td><b>WorkBuddy</b>、Codex（云端）</td><td><b>纯小白首选</b></td></tr>
+        <tr><td><span class="pill t">终端型</span></td><td>运行在<b>命令行（终端，就是那个黑底白字、靠打字输指令的窗口）</b>，直接操作你本地项目文件</td><td><b>Claude Code</b>（同类：Codex CLI、Gemini CLI）</td><td>想精细控制本地项目、懂命令行的人</td></tr>
+        <tr><td><span class="pill p">插件型</span></td><td>智能体本身采用<b>插件化架构</b>——能像手机装 App 一样，往里加不同的功能模块（工具/模型/记忆/流程）</td><td><b>DeepSeek Harness</b>、<b>Pi Agent</b>（仅作架构示意，不代表推荐使用；都是进阶工具，做作品集用不到，先了解即可）</td><td>想高度可定制、按需拼装能力的人（<b>本课不做，仅科普</b>）</td></tr>
+      </table>
+
+      <h2>4.2 它们到底差在哪</h2>
+      <ul>
+        <li><b>沙箱型（WorkBuddy）：</b>自带隔离运行环境，生成物直接在预览里看，<b>不碰本机</b>，最安全省心。✅ 本课程主线。</li>
+        <li><b>终端型（Claude Code）：</b>直接在本地命令行读写项目，灵活但要会一点命令行，且因能改你电脑文件要更小心。</li>
+        <li><b>插件型（DeepSeek Harness、Pi Agent，进阶）：</b>关键在于"<b>整个智能体由插件组成</b>"——你能往里插不同的工具、模型、记忆和流程，扩展它的本事，像手机装 App。它和前两者的区别不在"长在哪"，而在"<b>内部是怎么搭出来的</b>"。零基础不用管它，知道有这回事就行。</li>
+      </ul>
+      <div class="tip warn"><b>进阶科普 · 可跳过：</b>别把两个"插件"搞混——一种是装在写代码软件（如 VS Code）里的小工具；另一种是本课程说的"<b>插件型智能体</b>"，指智能体自身的架构由插件拼成（代表：DeepSeek Harness、Pi Agent，仅作架构示意、不代表推荐使用）。你不用管这个区别，记住"用沙箱型"就够了。</div>
+
+      <h2>4.3 选型决策树（借鉴 Odin 的"先选路"，你目前只需第一条）</h2>
+      <ul>
+        <li>第一次做网站、怕配置 → <b>沙箱型（WorkBuddy）</b> ✅ 就选这个</li>
+        <li>想精细控制本地项目、懂命令行 → <b>终端型（Claude Code）</b></li>
+        <li>想自己拼装/扩展智能体能力 → <b>插件型（DeepSeek Harness / Pi Agent）</b>（进阶）</li>
+      </ul>
+      <div class="tip"><b>核心认知：</b>无论哪类工具，<b>你做的事都一样</b>——写清需求→看产出→提修改→验收。工具只是"你和 AI 对话的窗口"不同。学好这一套，等于学会所有工具。</div>
+      <button class="btn done-btn" onclick="markDone(4)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第5章 -->
+  <section id="s5">
+    <div class="card">
+      <div class="crumb">课程 / 工具篇</div>
+      <h1>第 5 章 · 核心技能：写好 Prompt</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>理解为什么 Prompt 最值钱；掌握好 Prompt 的 4 要素；能区分好坏示例；用下方生成器产出可直接发送的需求文案。</div>
+
+      <h2>5.1 为什么 Prompt 是最值钱的技能</h2>
+      <p>AI 不是读心术。你给的约束越具体，它瞎猜空间越小，一次出好货概率越高。这叫"减少歧义"——<b>你表达得越清楚，世界越听话</b>。</p>
+
+      <h2>5.2 好 Prompt 的 4 要素（借鉴 freeCodeCamp 的示例教学法）</h2>
+      <ol>
+        <li><b>我是谁</b>（身份、求职方向）</li>
+        <li><b>页面模块</b>（头像区、简介、技能、项目、联系方式）</li>
+        <li><b>什么风格</b>（简洁专业 / 活泼 / 科技感）</li>
+        <li><b>技术约束</b>（单页、手机电脑都好看、纯静态）</li>
+      </ol>
+
+      <h2>5.3 正反例对比</h2>
+      <table>
+        <tr><th>❌ 模糊</th><th>✅ 清楚</th></tr>
+        <tr><td><code>做个好看的网站</code></td><td><code>做个人作品集单页，我叫小林想转行做产品经理，要简洁专业蓝灰风，单页响应式纯静态</code></td></tr>
+        <tr><td><code>加个功能</code></td><td><code>在"关于我"下方加一个 3 张卡片的"项目经历"模块</code></td></tr>
+      </table>
+
+      <h2>5.4 迭代式提问</h2>
+      <ul>
+        <li>追加：<code>再把卡片间距调大一点</code></li>
+        <li>修正：<code>颜色太暗了，换成清爽的藏青</code></li>
+        <li>撤销：<code>撤销刚才的修改，回到上一版</code></li>
+      </ul>
+
+      <h2>5.5 🛠 需求生成器（填完可复制发给 AI）</h2>
+      <div class="widget">
+        <label class="f">你的名字（请填你真实的，下面例子只是示范）</label>
+        <input type="text" id="f_name" placeholder="例如：张三">
+        <label class="f">身份 / 求职方向</label>
+        <input type="text" id="f_role" placeholder="例如：想转行做产品经理的应届生">
+        <label class="f">想展示的 2~3 个亮点（逗号分隔）</label>
+        <input type="text" id="f_points" placeholder="例如：做过校园公众号、会数据分析、热爱用户研究">
+        <label class="f">想要的风格</label>
+        <select id="f_style">
+          <option value="简洁专业、留白多、蓝灰配色">简洁专业、留白多、蓝灰配色</option>
+          <option value="活泼温暖、圆角、橙黄配色">活泼温暖、圆角、橙黄配色</option>
+          <option value="科技感、深色背景、霓虹点缀">科技感、深色背景、霓虹点缀</option>
+          <option value="文艺清新、淡绿、图片感">文艺清新、淡绿、图片感</option>
+        </select>
+        <label class="f">联系方式（选填）</label>
+        <input type="text" id="f_contact" placeholder="例如：邮箱 hello@example.com">
+        <div class="row" style="margin-top:14px">
+          <button class="btn" onclick="genPrompt()">⚡ 生成需求文案</button>
+          <button class="btn ghost" onclick="copyPrompt()">📋 复制</button>
+        </div>
+        <div class="out" id="promptOut">填写上方内容后点「生成需求文案」。</div>
+        <div class="tip" style="margin-top:10px"><b>下一步去哪：</b>点「📋 复制」后，到<b>第 6 章把这段文字发给 WorkBuddy</b>，网站就会生成在 WorkBuddy 的预览里。</div>
+      </div>
+      <button class="btn done-btn" onclick="markDone(5)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第6章 -->
+  <section id="s6">
+    <div class="card">
+      <div class="crumb">课程 / 实战篇</div>
+      <h1>第 6 章 · 实战①：一句话生成作品集页</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>用第 5 章生成器产出文案并发送给 WorkBuddy；读懂返回的项目结构；完成本地预览；建立"先要能看的，再迭代"的心态。</div>
+
+      <h2>6.1 明确你的作品集目标</h2>
+      <p>回看第 1 章你拆的 4 个模块。一个通用作品集至少包含：<b>顶部自我介绍</b>（姓名+一句话定位）、<b>关于我</b>、<b>技能/亮点</b>、<b>联系方式</b>。</p>
+
+      <h2>6.2 把文案发给 WorkBuddy</h2>
+      <div class="tip warn"><b>🔁 第一次"切 App"交接（关键）：</b>本教程是一个网页，WorkBuddy 是<b>另一个网站 / 另一个浏览器标签页</b>。请现在<b>切回你第 3 章打开的 WorkBuddy 标签页</b>（没有就新开 workbuddy.ai 开个新对话）。把你第 5 章点过「📋 复制」的那段文案，<b>长按粘贴进 WorkBuddy 的聊天输入框，按发送</b>。网站会直接出现在 <b>WorkBuddy 的预览窗口</b>里——<b>不在本教程里</b>，看到预览就说明成了一半。</div>
+      <p>粘贴第 5 章生成的需求文案并发送。它可能还会追问细节（如"要头像吗"），用大白话回答即可。</p>
+      <div class="tip"><b>🔑 全程统一的操作规则（很重要）：</b>你从头到尾<b>只在 WorkBuddy 的聊天框里用大白话下令</b>，例如"请把页面顶部的标题改成我的名字"。AI 会改文件并给你新预览，<b>你不用自己打开或编辑任何文件</b>。后面所有"在 X 里加 / 改"都是"让 AI 去 X 里加 / 改"的意思。</div>
+
+      <h2>6.3 读懂它给的项目结构</h2>
+      <pre><code>项目/
+├─ index.html   ← 主页面（你主要改这里）
+├─ style.css    ← 样式（WorkBuddy 可能把所有样式写在 index.html 里，也可能单独拆出这个文件）
+└─ ...           ← 可能还有其他资源</code></pre>
+      <div class="tip"><b>重点：</b>对零基础来说，<code>index.html</code> 是你要最常打交道的文件。按第 5 章生成器发的指令，大概率是<b>单文件</b>（CSS 已内联在网页里）；但 AI 也可能拆出 <code>style.css</code> 等。文件多少都不影响保存：<b>推荐用第 6.6 节方法一整包下载</b>；若工具没有下载按钮，再用"合并单文件"兜底走方法二。不管几个文件，<b>部署时一起上传</b>即可。后面两章带你逐行读懂它。<b>生成完网站后记得回到本教程继续往下学～</b></div>
+
+      <h2>6.4 本地预览</h2>
+      <p>WorkBuddy 会给出预览窗口，你立刻能看到网站雏形。<span class="analogy">是不是有点小激动？</span></p>
+
+      <h2>6.5 第一版的预期管理</h2>
+      <ul>
+        <li>别追求一次完美。先要一个"能看的东西"。</li>
+        <li>不满意就一句句提，这正是 Vibe Coding 的爽点。</li>
+        <li>如果完全跑偏，说 <code>重新来一版，要求如下…</code> 即可。</li>
+      </ul>
+
+      <h2>6.6 把网站保存到你的电脑（为上线做准备 · 此步需要电脑）</h2>
+      <div class="tip warn"><b>⚠ 此步需要一台电脑（Windows 或 Mac），手机做不了。</b>纯手机用户请先跳过这一节，借到电脑时再回来做；前面章节都能在手机上学完。下面分<b>两条存盘路线</b>，外加一个"<b>找不到导出按钮时的兜底步骤</b>"：路线一（推荐）→ 直接导出整包；没有导出按钮时才先做"兜底"（让 AI 合并成单文件）再走路线二。</div>
+      <p><b>想纯手机走 14.2 路线 0 毕业的，可以跳过本节</b>，等借到电脑、或走 14.3 时再存。其余同学请看下面：第 14 章会讲<b>三条部署路线</b>，分别记为 <b>路线 0（14.2 · WorkBuddy 一键部署）</b>、<b>路线 A（14.3 · Cloudflare Pages）</b>、<b>路线 B（14.4 · GitHub Pages，进阶可选）</b>，任选一条能成即可，不用全做。其中路线 0 通常不需要先存到电脑，但<b>我们现在先把网站存一份当备案最稳</b>——这样路线 0 万一不成的，立刻接路线 A 也绝不会卡住。</p>
+
+      <h3>方法一（推荐）：用 WorkBuddy 导出 / 下载</h3>
+      <div class="tip"><b>⚠ 版本提示：</b>不同版本的 WorkBuddy 界面 / 按钮名字可能略有不同（叫"下载""导出""下载项目"都可能是它）。<b>认准"把整个项目打包下载成一个 zip"的意思即可</b>，不用和字面逐字对应。</div>
+      <ul>
+        <li>在预览窗口或聊天里找"下载项目 / 导出"按钮（一般在预览上方或文件列表处）。找到就点它——它会把<b>整个项目（含所有文件）</b>下载成一个压缩包（zip），最省心。</li>
+        <li>zip 一般在浏览器底部或"下载"文件夹里。<b>Mac：双击自动解压成一个同名文件夹。Windows：右键 zip → 选「全部解压缩 / Extract All」，会得到一个同名文件夹</b>——<b>记住它的位置</b>，第 14 章要"拖这个文件夹"上传。</li>
+        <li><b>如果找不到这个按钮：</b>别急，先用下面的"合并单文件"兜底，再走方法二，千万别直接跳到方法二（否则多文件站点会丢样式）。</li>
+      </ul>
+      <div class="tip good"><b>存好自检（方法一）：</b>双击文件夹里的 <code>index.html</code>，能用浏览器打开看到网站就说明文件齐了；顺便看一眼里面有没有 <code>style.css</code> 等——部署时都要一起上传，缺一不可。</div>
+
+      <h3>找不到导出按钮时的兜底：先让 AI 合并成单个文件</h3>
+      <div class="tip"><b>为什么需要这步：</b>有的工具版本没有"导出"按钮，而且 AI 可能把样式拆成了 style.css 等好几个文件。方法二（自己存文件）一次只能稳存一个文件，所以先让 AI 把全部代码"<b>合并进一个 index.html</b>"，后面就变成单文件，怎么存都不会丢。</div>
+      <ul>
+        <li>在对话框输入：<code>请把整个网站的所有代码（HTML + CSS + JS）合并进<b>一个</b> index.html 文件里，CSS 全部写在 &lt;style&gt; 里、JS 全部写在 &lt;script&gt; 里，方便我下载保存。把合并后的完整代码发给我。</code></li>
+        <li>等它发回后，再去下方方法二，把这一份单文件存到电脑即可。</li>
+      </ul>
+
+      <h3>方法二（单文件）：把 AI 已发给你的那份单文件存到电脑</h3>
+      <div class="tip warn"><b>⚠ 本方法只存"一个 index.html 文件"。</b>只要你先用上面的"合并单文件"兜底把网站压成一个文件，这里就安全；<b>不要</b>在"AI 还生成了 style.css、script.js 等多个文件、又没合并"的情况下直接用本方法</b>，否则部署后会丢样式/交互。</div>
+      <p>这是全教程<b>唯一一次需要你自己在电脑上存文件</b>。（还记得第 6.2 节说"你不用自己编辑文件"吗？那是指<b>平时迭代让 AI 改</b>就好；这里是<b>备案动作</b>——为了能把网站"带走、部署上线"而需要你自己存一份到电脑，平时用不到。）步骤如下：</p>
+      <ul>
+        <li>确认 AI 已把网站合并成单个 index.html（或你确认本来就只有一个文件）。直接用上面"合并单文件"兜底里 <b>AI 已经发给你的那份完整代码</b>，全选复制即可——<b>不用再让 AI 发一遍</b>。</li>
+        <li><b>Mac：</b>打开"文本编辑"（<b>新建一个空白文稿</b>）→ 先按 <code>⌘+Shift+T</code> 转成纯文本 → <b>把 AI 发给你的完整代码粘贴进来</b> → 菜单"文件→存储" → 在<b>文件名框手动连写</b> <code>index.html</code>，并<b>取消勾选</b>"如果没有扩展名则使用 .txt"（若有这选项）→ 保存。存完看一眼文件名，结尾若是 <code>.txt</code> 就重命名去掉。</li>
+        <li><b>Windows：</b>用"记事本" → 保存类型选"所有文件"、编码选 UTF-8，文件名写 <code>index.html</code>。</li>
+      </ul>
+      <div class="tip good"><b>存完自检：</b>双击这个 <code>index.html</code> 文件，会用浏览器打开看到你的网站——能打开就说明存对了。<b>打不开／打开是满屏代码乱码</b>，多半是文件名多了 <code>.txt</code>（变成 index.html.txt），回去重命名去掉 .txt 即可。</div>
+      <div class="tip"><b>你电脑上最终应该看到：</b><br>· 走方法一（多文件）的用户 → <b>一个文件夹</b>，里面有 <code>index.html</code>，可能还有 <code>style.css</code> 等。<br>· 走方法二（单文件）的用户 → <b>直接一个 <code>index.html</code> 文件</b>就够，不用再建文件夹。<br><b>Cloudflare 上传"文件夹"或"单个文件"都接受，但务必确认网站所需的所有文件都在里面。</b></div>
+      <button class="btn done-btn" onclick="markDone(6)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第7章 -->
+  <section id="s7">
+    <div class="card">
+      <div class="crumb">课程 / 实战篇</div>
+      <h1>第 7 章 · 读懂代码：HTML 逐行翻译</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>理解 HTML 是"骨架"；认识标签/元素/属性；记住常用标签；理解语义化；能动手改一处文字看变化。</div>
+
+      <div class="tip warn"><b>🔁 重要提醒（贯穿第 7–13 章）：</b>请保持你第 6 章那个 WorkBuddy 对话窗口<b>不要关、不要新建对话</b>——你所有的修改都保存在那里。每次回到 WorkBuddy 都用<b>同一个对话</b>继续下令；关了就找不回之前的改动。</div>
+
+      <h2>7.1 HTML 是骨架</h2>
+      <p>HTML（超文本标记语言）用"标签"描述页面结构。<b>标签</b>像容器，<b>元素</b>是标签+内容，<b>属性</b>是标签上的附加信息。</p>
+
+      <h2>7.2 常用标签速查</h2>
+      <table>
+        <tr><th>标签</th><th>含义</th><th>例子</th></tr>
+        <tr><td><code>&lt;h1&gt;</code></td><td>一级大标题</td><td><code>&lt;h1&gt;林小满&lt;/h1&gt;</code></td></tr>
+        <tr><td><code>&lt;p&gt;</code></td><td>一段文字</td><td><code>&lt;p&gt;想转行做产品经理&lt;/p&gt;</code></td></tr>
+        <tr><td><code>&lt;div&gt;</code></td><td>一个区块容器</td><td><code>&lt;div class="card"&gt;…&lt;/div&gt;</code></td></tr>
+        <tr><td><code>&lt;a&gt;</code></td><td>链接</td><td><code>&lt;a href="mailto:x@y.com"&gt;联系&lt;/a&gt;</code></td></tr>
+        <tr><td><code>&lt;ul&gt;/&lt;li&gt;</code></td><td>无序列表/项</td><td>列技能点</td></tr>
+        <tr><td><code>&lt;img&gt;</code></td><td>图片</td><td><code>&lt;img src="me.jpg"&gt;</code></td></tr>
+      </table>
+
+      <h2>7.3 语义化（借鉴 MDN 语义化章节）</h2>
+      <p>现代 HTML 推荐用"有意义的标签"：<code>&lt;header&gt;</code> 页头、<code>&lt;section&gt;</code> 区块、<code>&lt;footer&gt;</code> 页脚。好处：结构清晰、对搜索引擎和无障碍更友好。</p>
+
+      <h2>7.4 动手：改一处文字看变化</h2>
+      <div class="tip warn"><b>🔁 现在切到 WorkBuddy 那个对话窗口，在聊天框里输入下面这句话：</b></div>
+      <p>在 WorkBuddy 对话里说：<code>把 index.html 里我网站的大标题（也就是我自己的名字）改成"你好，我是XXX"</code>（把 XXX 换成你真正想写的话）。看预览是否同步变化——你刚刚就"改了 HTML"。</p>
+      <div class="tip"><b>规律：</b>以后 80% 的文字修改，都是找 HTML 里的文字替换。记住"改文案→动 HTML"。<b>改完这一处，回到本教程点「✓ 完成本章」继续往下学～</b></div>
+      <button class="btn done-btn" onclick="markDone(7)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第8章 -->
+  <section id="s8">
+    <div class="card">
+      <div class="crumb">课程 / 实战篇</div>
+      <h1>第 8 章 · 读懂代码：CSS 让页面变好看</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>理解 CSS 是"装修"；认识选择器/属性/值；理解盒模型；会用实时代码沙盒改颜色、布局、圆角。</div>
+
+      <h2>8.1 CSS 是装修</h2>
+      <p>CSS 用"选择器{属性:值}"描述样式。例如：</p>
+      <pre><code>.card{ background:#fff; border-radius:16px; padding:20px; }</code></pre>
+      <p>意思是：所有 <code>class="card"</code> 的元素，白底、圆角 16px、内边距 20px。</p>
+
+      <h2>8.2 盒模型（借鉴 MDN，零基础必懂）</h2>
+      <p>页面上每个元素都是一个"盒子"，由内到外：<b>内容 → padding（内边距）→ border（边框）→ margin（外边距）</b>。间距调不好，多半是这几项没搞清。</p>
+      <div class="tip"><b>调试口诀：</b>元素贴太近→加 margin；内容和边太挤→加 padding；想要边框→border。</div>
+
+      <h2>8.3 颜色 / 字体 / 布局（Flexbox 简介）</h2>
+      <ul>
+        <li>颜色：<code>color</code>（文字）、<code>background</code>（背景），值可用 <code>#16a34a</code> 这种十六进制。</li>
+        <li>字体：<code>font-size</code>、<code>font-family</code>。</li>
+        <li>布局：<code>display:flex</code> 让子元素横着排，最常用。</li>
+      </ul>
+
+      <h2>8.4 🛠 实时代码沙盒（在代码框改、预览框即时变）</h2>
+      <div class="tip"><b>手机也能玩，但打代码符号（&lt; &gt; { }）麻烦，建议借电脑体验更顺。</b>手机用户可先看懂规律——重点是记住"改好看 → 动 CSS"。</div>
+      <div class="widget">
+        <div class="sandbox">
+          <textarea id="sb" spellcheck="false"></textarea>
+          <iframe id="preview" title="预览"></iframe>
+        </div>
+        <div class="chips">
+          <span class="chip" onclick="challenge('title')">① 改大标题文字</span>
+          <span class="chip" onclick="challenge('color')">② 背景改蓝色</span>
+          <span class="chip" onclick="challenge('card')">③ 卡片加圆角</span>
+          <span class="chip" onclick="challenge('flex')">④ 改 flex 看横排/竖排</span>
+          <span class="chip" onclick="challenge('reset')">↺ 恢复</span>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <button class="btn ghost" onclick="copyCode()">📋 复制当前代码</button>
+          <span class="fb" id="sbHint" style="color:var(--muted)">提示：把预览框里的效果和你改的代码框对应起来看（电脑上代码在左、预览在右；手机上代码在上、预览在下，都一样）。</span>
+        </div>
+      </div>
+      <div class="tip"><b>规律：</b>"改好看→动 CSS"。沙盒里试满意后，把代码贴回 WorkBuddy 或直接用大白话让它改。</div>
+      <button class="btn done-btn" onclick="markDone(8)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第9章 -->
+  <section id="s9">
+    <div class="card">
+      <div class="crumb">课程 / 实战篇</div>
+      <h1>第 9 章 · 读懂代码：JavaScript 让它动起来</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>理解 JS 是"电路/开关"；知道变量/函数/事件的概念；看懂一个简单的点击交互；明白"让 AI 加交互"即可，不必全懂。</div>
+
+      <h2>9.1 JS 是电路与开关</h2>
+      <p>HTML 是框架、CSS 是装修，<b>JavaScript（JS）让页面"会动"</b>：点击切换、表单提交、动态内容等都靠它。</p>
+
+      <h2>9.2 三个最基础概念</h2>
+      <ul>
+        <li><b>变量：</b>装数据的盒子，如 <code>let name = "小林"</code>。</li>
+        <li><b>函数：</b>一段可重复执行的指令，如 <code>function greet(){ … }</code>。</li>
+        <li><b>事件：</b>"发生了什么"的触发，如"按钮被点击"。</li>
+      </ul>
+
+      <h2>9.3 一个点击交互示例</h2>
+      <pre><code>&lt;button onclick="showContact()"&gt;联系我&lt;/button&gt;
+&lt;script&gt;
+  function showContact(){
+    alert("邮箱：hello@example.com");
+  }
+&lt;/script&gt;</code></pre>
+      <p>意思是：点"联系我"按钮 → 触发 <code>showContact</code> 函数 → 弹出邮箱。</p>
+
+      <h2>9.4 你不必全懂，但要会"派活"</h2>
+      <div class="tip warn"><b>🔁 切到 WorkBuddy 那个对话窗口，在聊天框里输入下面这句话：</b></div>
+      <div class="tip"><b>实操话术：</b><code>加一个"复制邮箱"的按钮，点击后把我的邮箱复制到剪贴板</code>。让 AI 写 JS，你负责验收"点一下有没有用"。这就是 Vibe Coding 处理交互的方式。<b>改完回到本教程点「✓ 完成本章」继续～</b></div>
+      <button class="btn done-btn" onclick="markDone(9)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第10章 -->
+  <section id="s10">
+    <div class="card">
+      <div class="crumb">课程 / 方法篇</div>
+      <h1>第 10 章 · 借鉴开源教程：站在巨人肩膀上</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>理解"开源"精神；认识几门权威开源/免费教程及各自擅长；学会用 AI 帮你读文档；拿到一份前端入门路线图。</div>
+
+      <h2>10.1 什么是开源</h2>
+      <p>"开源"指源代码公开、允许自由学习/修改/分享。无数人把毕生教学经验免费公开，才有了今天零基础也能自学的可能。<b>会借力，是 Vibe Coding 时代的核心素养。</b></p>
+
+      <h2>10.2 推荐的开源 / 免费教程（及各自擅长）</h2>
+      <table>
+        <tr><th>教程</th><th>擅长</th><th>怎么用</th></tr>
+        <tr><td><b>freeCodeCamp</b></td><td>项目驱动、交互式练习、体系完整</td><td>想系统刷题式学，跟它的认证路径</td></tr>
+        <tr><td><b>The Odin Project</b></td><td>全栈路线图、强调做真实项目</td><td>想走"做项目学到东西"的路线</td></tr>
+        <tr><td><b>CS50（哈佛）</b></td><td>计算思维、比喻教学、视野开阔</td><td>想先建立"怎么像程序员一样想"</td></tr>
+        <tr><td><b>MDN Web Docs</b></td><td>Web 技术权威参考、示例精准</td><td>遇到具体 HTML/CSS/JS 不懂，查它</td></tr>
+        <tr><td><b>菜鸟教程 / 廖雪峰</b></td><td>中文、零基础友好、速查</td><td>中文语境下快速查语法</td></tr>
+      </table>
+      <div class="tip"><b>本教程的借鉴说明：</b>我们吸收了它们"循序渐进 + 动手优先 + 概念先行"的教法，并按 Vibe Coding 场景改编。内容版权归各原教程，此处为教学致谢与引用。</div>
+
+      <h2>10.3 用 AI 帮你读开源文档（超实用）</h2>
+      <p>MDN 某段看不懂？直接把链接或片段贴给 WorkBuddy：<code>用大白话解释这段 MDN 文档在说什么，并给我一个最小例子</code>。你等于拥有了一个"24 小时私人助教"。</p>
+
+      <h2>10.4 前端入门路线图</h2>
+      <ol>
+        <li><b>阶段一（基础）：</b>HTML 结构 → CSS 样式 → JS 基础交互</li>
+        <li><b>阶段二（提速）：</b>响应式布局 → 用一个静态站点生成器（见第 11 章）</li>
+        <li><b>阶段三（进阶）：</b>部署上线 → 按需深入框架（React/Vue 等）</li>
+      </ol>
+      <div class="tip good"><b>心态：</b>你不需要"学完所有"才开始做。路线是地图，不是牢笼。带着目标边做边查，效率最高。</div>
+      <button class="btn done-btn" onclick="markDone(10)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第11章 -->
+  <section id="s11">
+    <div class="card">
+      <div class="crumb">课程 / 实战篇</div>
+      <h1>第 11 章 · 实战②：用开源模板加速</h1>
+      <div class="tip good"><b>📌 本章是"提速可选包"。</b>跳过它，你照样能做出并上线作品集；等前面手感够了，再回来玩模板和技术栈。所以别焦虑"是不是必须做"，不是。另外：<b>结业进度和证书不以本章为准</b>——跳过第 11 章也能拿到结业证书，其余必做章完成即可。</div>
+      <div class="objectives">🎯 <b>学习目标：</b>理解"从模板起步"为何更快；知道去哪找模板；了解静态站点生成器与 CSS 框架；用技术栈选择器生成进阶需求。</div>
+
+      <h2>11.1 为什么从模板起步更快</h2>
+      <p>从空白写起要决定无数细节。而开源模板已经把结构、样式、响应式都做好了，你只需<b>换内容</b>。这正是 Vibe Coding + 开源的组合拳。</p>
+
+      <h2>11.2 去哪找模板</h2>
+      <div class="tip"><b>先认识一下 GitHub：</b>它是一个全球最大的"代码存放网站"，全世界的程序员把开源项目（包括大量现成网站模板）免费放在上面。你不用先懂它怎么用——只要知道"有这个地方能搜到模板"即可，后面第 14 章部署还会再遇到它。</div>
+      <ul>
+        <li><b>GitHub 搜索</b>（那个代码网站）：搜 <code>portfolio template</code>、<code>astro portfolio</code> 等关键词，能找到别人做好的作品集模板。</li>
+        <li><b>官方主题市场</b>：一些工具自己提供的模板集市，如 Astro Themes、Hugo 主题库（"主题"就是现成的网站外观）。</li>
+        <li><b>样式参考</b>：Tailwind、Bootstrap 官网里的示例页面，能照着改。</li>
+      </ul>
+      <div class="tip warn"><b>零基础提示：</b>这一节是"知道有这回事"即可，不要求你现在就去搜。本课程主线仍用单页 HTML，保证零门槛；等手感有了，再回来用模板提速。</div>
+
+      <h2>11.3 静态站点生成器简介（借鉴开源项目）</h2>
+      <div class="tip"><b>先说清楚它是啥：</b><b>静态站点生成器</b>是一种"帮你把内容快速拼成纯 HTML 网站"的工具——你写内容、它生成页面，适合做博客/作品集。当前课程用单页 HTML 就够，先知道"有这东西"即可。</div>
+      <table>
+        <tr><th>工具</th><th>特点</th></tr>
+        <tr><td><b>Astro</b></td><td>现代、快、对内容站极友好，主题丰富</td></tr>
+        <tr><td><b>Hugo</b></td><td>极快、文档/作品集常用，主题库庞大</td></tr>
+      </table>
+      <div class="tip"><b>零基础提示：</b>不必现在就学它们。先记住"有这么一类工具能让我更快建站"，等手感有了再深入。当前课程仍用单页 HTML 主线，保证零门槛。</div>
+
+      <h2>11.4 CSS 框架简介</h2>
+      <ul>
+        <li><b>Tailwind CSS：</b>用预设类快速排版，不用自己写大量 CSS。</li>
+        <li><b>Bootstrap：</b>成熟组件库，按钮/卡片/导航开箱即用。</li>
+      </ul>
+
+      <h2>11.5 🛠 技术栈选择生成器</h2>
+      <div class="widget">
+        <label class="f">勾选你想尝试的技术（可多选）</label>
+        <div class="row" style="gap:14px">
+          <label><input type="checkbox" class="ts" value="Astro 静态站点生成器"> Astro</label>
+          <label><input type="checkbox" class="ts" value="Hugo 静态站点生成器"> Hugo</label>
+          <label><input type="checkbox" class="ts" value="Tailwind CSS 框架"> Tailwind</label>
+          <label><input type="checkbox" class="ts" value="Bootstrap 框架"> Bootstrap</label>
+          <label><input type="checkbox" class="ts" value="一个现成的开源 portfolio 模板"> 现成模板</label>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn" onclick="genStack()">⚡ 生成进阶需求</button>
+          <button class="btn ghost" onclick="copyStack()">📋 复制</button>
+        </div>
+        <div class="out" id="stackOut">勾选上方技术后点「生成进阶需求」。</div>
+      </div>
+
+      <h2>11.6 让 AI 把模板改成你的内容</h2>
+      <p>把模板文件发给 WorkBuddy：<code>这是我的网站模板，请把所有占位文字换成我的真实信息：姓名（你的名字）、定位（想转行做产品经理）…</code> 它会批量替换，省去你手动改。</p>
+      <button class="btn done-btn" onclick="markDone(11)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第12章 -->
+  <section id="s12">
+    <div class="card">
+      <div class="crumb">课程 / 实战篇</div>
+      <h1>第 12 章 · 迭代升级：做出专业感</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>掌握"小步快跑"心法；能给作品集加模块、做响应式、加深色模式、加微交互。</div>
+
+      <h2>12.1 小步快跑心法</h2>
+      <ul>
+        <li>一次只改<b>一个点</b>，改完看效果，再提下一个。</li>
+        <li>不喜欢就说 <code>撤销刚才的修改</code>。</li>
+        <li>看到好的地方夸一句"这个保留"——正向反馈让 AI 更懂你。</li>
+      </ul>
+
+      <h2>12.2 模块化：加内容区块</h2>
+      <div class="tip warn"><b>🔁 切到 WorkBuddy 那个对话窗口，在聊天框里输入下面任意一句试试：</b></div>
+      <ul>
+        <li><code>加一个"项目经历"模块，放 3 个卡片</code></li>
+        <li><code>顶部加导航栏，点击能跳到对应区块</code></li>
+        <li><code>加一个"下载简历 PDF"按钮</code></li>
+      </ul>
+
+      <h2>12.3 响应式：手机也好看</h2>
+      <div class="tip"><b>原理：</b>"手机好看"本质是 CSS 里一句 <code>@media (max-width:600px){…}</code>，意思是"屏幕小于 600px 时改用另一套排版"。你只要说"手机好看"，AI 会加。</div>
+
+      <h2>12.4 深色模式 & 微交互</h2>
+      <ul>
+        <li><code>加一个深色模式切换按钮</code></li>
+        <li><code>卡片 hover 时轻轻上浮一点</code>（微交互，提升质感）</li>
+        <li><code>进场时标题淡入</code></li>
+      </ul>
+
+      <h2>12.5 练习清单（对照打勾）</h2>
+      <ul class="checklist">
+        <li>加了一个"项目经历"卡片模块</li>
+        <li>在手机宽度下预览过，排版正常（WorkBuddy 预览里找"手机/平板"图标切换视图；或把电脑浏览器窗口拖窄一点，看排版是否还正常）</li>
+        <li>加了一个 hover 或进场动效</li>
+        <li>整体配色统一、留白舒适</li>
+      </ul>
+      <div class="tip"><b>提示：</b>本章在 WorkBuddy 里改完样式后，<b>回到本教程点「✓ 完成本章」继续</b>；改不动、改坏都别慌，下一章教你怎么排查。</div>
+      <button class="btn done-btn" onclick="markDone(12)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第13章 -->
+  <section id="s13">
+    <div class="card">
+      <div class="crumb">课程 / 上线篇</div>
+      <h1>第 13 章 · 让网站更专业：SEO / 图标 / 域名</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>知道让搜索引擎找到你的基本设置；理解 favicon；了解域名常识与"先用免费子域"；了解性能与可访问性。</div>
+
+      <h2>13.1 让搜索引擎找到你（基础 SEO）</h2>
+      <div class="tip warn"><b>🔁 切到 WorkBuddy 那个对话窗口，在聊天框里输入下面这句（先把张三换成你自己的）：</b></div>
+      <div class="tip"><b>先说一句大白话：</b><code>&lt;head&gt;</code> 是网页的"头部"，放一些看不见但很重要的设置。SEO 要加的两个标签就是 <code>&lt;title&gt;</code>（浏览器标签上显示的标题）和 <code>&lt;meta name="description"&gt;</code>（别人在百度/谷歌搜到你时，结果里显示的那段描述）。你不用懂原理，照下面模板发给 AI 就行——<b>但记得先把括号里的占位换成你自己的真实信息</b>。</div>
+      <p><b>⚠ 一定先改再发：</b>下面例子里写的是"张三"，<b>把张三换成你自己的名字和定位</b>，改好整段发给 AI。嫌改麻烦也行，直接打字告诉 AI：<code>请在 head 里把标题设成"张三 · 个人作品集"，描述设成"想转行做产品经理的张三的作品集"</code>（同样换成你自己的）。</p>
+      <p>在 WorkBuddy 里说（把张三换成你自己的）：<code>请在页面的 &lt;head&gt; 里加上：&lt;title&gt;张三 · 个人作品集&lt;/title&gt; &lt;meta name="description" content="想转行做产品经理的张三的作品集"&gt;</code>。AI 会改好并给你新预览。</p>
+      <div class="tip"><b>原理（SEO 是 Search Engine Optimization，搜索引擎优化的缩写，就是让百度/谷歌更容易搜到你）：</b>搜索引擎靠这些标签理解你的页面。标题和描述写清楚，别人搜相关词才更容易找到你。</div>
+
+      <h2>13.2 favicon（小图标）</h2>
+      <p>浏览器标签页左上角的小图标。最省事的做法：直接让 AI 用你的中文名生成，例如你叫张伟就说：<code>用"张伟"的中文名做一个简单 favicon 并接入页面</code>。想用字母也行，就写 <code>ZW</code>（名字拼音首字母）——中文名是默认路径，字母可选。<b>如果中文名生成出来挤在一起 / 不清晰，就改用名字拼音首字母（如 ZW），效果更稳。</b></p>
+
+      <h2>13.3 域名常识</h2>
+      <ul>
+        <li><b>域名：</b>像 <code>yourname.com</code>，是网站的网络地址。</li>
+        <li><b>免费起步：</b>部署平台会给你子域（如 <code>xxx.pages.dev</code>），新手先用它。</li>
+        <li><b>想用自己的域名：</b>再去注册商购买并绑定，属于进阶，不急。</li>
+      </ul>
+
+      <h2>13.4 性能与可访问性常识</h2>
+      <ul>
+        <li>图片别太大，否则加载慢。</li>
+        <li>文字和背景对比度够，才看得清（可访问性）。</li>
+        <li>这些都可以直接问 AI：<code>帮我校验这个页面的可访问性并给改进建议</code>。</li>
+      </ul>
+      <div class="tip"><b>提示：</b>本章在 WorkBuddy 里加完 SEO / favicon 后，<b>回到本教程点「✓ 完成本章」继续</b>，下一步我们就去把它真正上线。</div>
+      <button class="btn done-btn" onclick="markDone(13)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第14章 -->
+  <section id="s14">
+    <div class="card">
+      <div class="crumb">课程 / 上线篇</div>
+      <h1>第 14 章 · 免费部署上线</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>理解部署原理；用 Cloudflare Pages 或 GitHub Pages 免费上线；或让 WorkBuddy 一键部署；完成上线检查清单。</div>
+
+      <h2>14.1 部署原理复习</h2>
+      <div class="tip"><b>原理：</b>部署 = 把你的 <code>index.html</code> 等文件，复制到一台 24 小时开机的公共服务器（由服务商管理、你只放文件），并绑一个网址。<b>本教程保证：跟着下面任一条路线，你都能拿到一个别人能访问的网址。</b></div>
+
+      <h2>14.2 路线 0（先试这条）：让 WorkBuddy 直接部署</h2>
+      <div class="tip"><b>三条路线按优先级：</b>先试 <b>14.2（路线 0）</b> → 不支持就走 <b>14.3（路线 A，Cloudflare）</b> → 想永久免费域名再说 <b>14.4（路线 B，GitHub Pages）</b>。任选一条能成即可，不用全做。</div>
+      <div class="tip warn"><b>走这条前，<u>建议</u>先按第 6.6 节把网站存到电脑当备案。</b>若 WorkBuddy 能直接部署，这步非强制；但存一份最稳妥——万一不支持，能立刻接路线 A，绝不卡住。</div>
+      <ol>
+        <li>在对话框输入：<code>帮我把这个网站部署上线，给我一个可访问的链接</code>。</li>
+        <li>如果 WorkBuddy 支持一键部署，它会直接给你一个网址——<b>搞定，这是最省事的</b>。</li>
+        <li>如果它说"暂不支持"（或你找不到部署入口）：<b>别慌，关掉它，回到第 6.6 节确认文件已存电脑，直接走下面 14.3 Cloudflare——免费且 100% 能成</b>，完全不影响你上线。所以这条不成也绝不会卡住。</li>
+      </ol>
+      <div class="tip good"><b>小贴士：</b>不同工具版本能力不同，所以先试这条；不行就路线 A，两条都免费、都能拿到网址。</div>
+
+      <h2>14.3 路线 A：Cloudflare Pages（上传文件夹，免费 · 此步需要电脑）</h2>
+      <div class="tip warn"><b>⚠ 前置 + 最重要提醒：</b>先把网站保存到电脑（<a href="javascript:void(0)" onclick="go(6)">在第 6 章往下找到 6.6 节</a>，得到含 <code>index.html</code> 的文件夹或单文件）。<br><b>⚠ 上传前务必重新导出「最新版」：</b>你第 7–13 章在 WorkBuddy 里加的深色模式、项目卡片、SEO 等改动，<b>不会</b>自动出现在第 6 章那份旧文件里。请在上传前<b>先回 WorkBuddy，把最新版本重新走一遍 6.6 方法一导出 / 保存</b>，确认文件夹里是最新的 <code>index.html</code>，<b>不要直接上传第 6 章那份旧备份</b>——否则上线的是没改过的初版。<br><b>如果你全程只有手机、6.6 也没做：</b>那这里确实需要借一台电脑（用来存文件 + 上传）；或者回到上方 <a href="javascript:void(0)" onclick="go(14)">14.2</a> 看 WorkBuddy 能否直接给你链接——能的话就不需要电脑。</div>
+      <ol>
+        <li><b>⚠ 先放宽心：</b>Cloudflare 官网界面常年会改版，下面提到的按钮名字（如"Workers & Pages""Upload"）可能有出入。<b>不用和文字逐字对齐</b>——认准"创建网站 / Pages / 直接上传文件夹"这类意思的入口就行；一眼找不到就点页面里的"Pages"或"创建"。按意思走，别被字面对不上吓退。</li>
+        <li>打开 <a href="https://pages.cloudflare.com" target="_blank" rel="noopener">Cloudflare Pages</a>。用邮箱注册（<b>免费、不需要信用卡</b>）→ 收验证邮件点链接 → 登录。</li>
+        <li>登录后<b>如果弹出"Add a site / 添加站点"</b>，先关掉或跳过——那是给"自己买域名"的人用的，和我们现在无关。然后在左侧菜单找 <b>Workers & Pages</b>（Cloudflare 里"创建并托管网站"的入口；<b>Git</b> 是程序员存代码历史的小工具，这里用不到），点右上角"创建" → 选 <b>Pages</b>（不是 Workers）→ 选"上传资产 / Upload"（是直接拖文件夹，不是连 Git）。</li>
+        <li>上传前会让你填一个<b>项目名</b>（随便起个英文短名，如 my-portfolio）；<b>如果</b>界面出现"<b>构建设置</b>"，构建命令和输出目录都<b>留空</b>即可（纯静态单文件不用填，没出现就直接下一步）。然后把第 6.6 节保存好的文件<b>拖进上传区</b>（或点"浏览"选文件）。<div class="tip"><b>✅ 上传一定要传对层级（最重要的一步）：</b>上传后，上传区里应该<b>直接看到 <code>index.html</code> 在最外层</b>（旁边可能还有 <code>style.css</code> 等）。<br>✅ 正确：<code>index.html</code>（最外层）<br>❌ 错误：只有一个 <code>my-portfolio</code> 文件夹、里面才是 index.html（这样打开网址会 404）。<br>最稳做法：<b>直接拖那个 <code>index.html</code> 文件</b>进去；或多文件就先双击打开你保存的文件夹、<b>选中里面全部文件</b>再一起拖。确认上传区上方是 <code>index.html</code> 这一级，再点 Deploy。</div></li>
+        <li>拖进去后，<b>必须点一下页面上的「部署 / Deploy」按钮（通常是蓝色）</b>——光传文件不算发布，<b>不点 Deploy 进度条不会走</b>。进度条走完，页面会显示一个 <code>xxx.pages.dev</code> 网址——<b>那就是你的真网址</b>，点它或复制发给别人都能打开，你的网站上线了！</li>
+      </ol>
+
+      <h2>14.4 路线 B：GitHub Pages（永久免费，<span style="color:var(--warn)">进阶可选</span>）</h2>
+      <div class="tip warn"><b>零基础优先主路径或路线 A。</b>路线 B 需要用到 GitHub（第 11 章提过的代码存放网站），涉及"仓库""分支"概念，略技术。只想快点上线就用前面两条；这里留着进阶。</div>
+      <div class="tip"><b>补几个词：</b><b>仓库</b>≈ 项目文件夹的"云端版"；<b>分支</b>≈ 一个版本线，新手用默认即可；<b>GitHub Pages</b> 是 GitHub 自带的"把仓库变网站"功能。</div>
+      <ol>
+        <li>注册 GitHub（第 11 章认识的网站），新建一个<b>仓库</b>（云端项目文件夹）。</li>
+        <li>进仓库后点 <b>Add file → Upload files</b>。<b>⚠ 不要整体拖"文件夹"进去</b>——GitHub 常会把文件夹当成子目录，导致打开网址 404（白屏）。正确做法：先按第 6 章 6.6 方法一把网站合并成<b>单个 index.html</b>（或进入你保存的文件夹、<b>选中里面全部文件</b>再一起拖），确保所有文件都在仓库<b>根目录</b>（没有多套一层文件夹），再点 <b>Commit changes</b> 提交。<b>同样记得：上传的是第 7–13 章修改后的最新版，别传第 6 章旧备份。</b></li>
+        <li>仓库 <b>Settings → Pages → 选择分支（用默认 main）→ Save</b>。</li>
+        <li>等几分钟，得到 <code>用户名.github.io/仓库名</code> 网址。</li>
+      </ol>
+
+      <h2>14.5 上线检查清单 + 避坑</h2>
+      <ul class="checklist">
+        <li>上传的是<b>含 index.html 的整个文件夹或单文件（在第 6 章往下找到 6.6 节）</b>（<a href="javascript:void(0)" onclick="go(6)">跳到第 6 章</a>）</li>
+        <li>主文件名叫 <code>index.html</code>（部署平台默认打开它）</li>
+        <li>本地预览正常后再传</li>
+        <li>打不开先查文件名/路径大小写</li>
+        <li><b>真机确认：</b>把网址发到微信、或复制到手机浏览器打开，确认能正常显示、手机上也好看——这就算真上线了</li>
+      </ul>
+      <div class="tip good"><b>里程碑：</b>做到这步，你拥有一个真实上线的作品集。写进简历、发朋友圈，这是 Vibe Coding 的第一个战利品。</div>
+      <button class="btn done-btn" onclick="markDone(14)">✓ 完成本章</button>
+    </div>
+  </section>
+
+  <!-- 第15章 -->
+  <section id="s15">
+    <div class="card">
+      <div class="crumb">课程 / 上线篇</div>
+      <h1>第 15 章 · 调试、避坑与结业</h1>
+      <div class="objectives">🎯 <b>学习目标：</b>掌握基础调试思路；牢记安全与隐私红线；了解版权；拿到下一步路径；完成成果自检。</div>
+
+      <h2>15.1 调试思路（网站"坏了"怎么办）</h2>
+      <ol>
+        <li>先看<b>哪里坏了</b>：整页白屏，还是某块不对？</li>
+        <li>白屏多因 HTML 少标签 / 文件名错；某块不对多因 CSS。</li>
+        <li>把报错文字<b>原样复制给 AI</b>：<code>这段代码报错了：xxx，怎么修？</code></li>
+      </ol>
+      <div class="tip"><b>原理：</b>调试（debug）= 让程序真实行为和预期对上。你不用懂全部，会"描述现象 + 交错误信息给 AI"就能解决 90%。</div>
+
+      <h2>15.2 安全与隐私红线</h2>
+      <ul>
+        <li>❌ 不往任何对话框贴：密码、<b>API 密钥</b>（相当于程序的"密码"，用来授权调用某项服务）、身份证号、银行卡。</li>
+        <li>✅ AI 工具不是保险箱，敏感信息本地保存。</li>
+        <li>✅ 部署用的平台，账号密码独立、开启两步验证。</li>
+      </ul>
+
+      <h2>15.3 版权</h2>
+      <ul>
+        <li>用了别人的模板/图片，<b>注明来源</b>，确认许可允许。</li>
+        <li>自己产出的内容，记得保留原文件以便修改。</li>
+      </ul>
+
+      <h2>15.4 下一步学习路径</h2>
+      <ul>
+        <li>想做<b>能存数据</b>的网站（留言板/记账）→ 了解"后端/数据库"</li>
+        <li>想做<b>小程序 / App</b> → 同样 Vibe Coding 思路换对应工具</li>
+        <li>想更<b>专业</b> → 试终端型（Claude Code），或插件型（DeepSeek Harness / Pi Agent，仅作架构示意）这类可拼装架构</li>
+        <li>想做<b>复杂 / 可定制</b>项目 → 深入了解插件型智能体的插件化架构</li>
+        <li>系统深学 → 回到第 10 章推荐的开源教程（MDN / freeCodeCamp 等）</li>
+      </ul>
+
+      <h2>15.5 🎓 结业 · 学习成果自检</h2>
+      <ul class="checklist">
+        <li>能向别人解释什么是 Vibe Coding</li>
+        <li>说清 HTML/CSS/JS 分别干嘛</li>
+        <li>用 WorkBuddy 做出并改过一个网页</li>
+        <li>把网站免费部署上线、拿到链接</li>
+        <li>我已拿到 xxx.pages.dev（或 WorkBuddy 给的）真网址，并在手机上打开确认能看</li>
+        <li>知道"开源教程"去哪查、怎么让 AI 帮读</li>
+      </ul>
+
+      <h2>15.6 致谢</h2>
+      <p class="footer-note" style="text-align:left;margin-top:8px">本教程的教学结构与教法，借鉴自 freeCodeCamp、The Odin Project、CS50、MDN Web Docs、菜鸟教程 / 廖雪峰教程等优秀开源与免费资源，版权归各自作者。内容经 Vibe Coding 场景改编，仅供学习。</p>
+
+      <div class="cert" id="cert" style="display:none">
+        <div class="seal">🏅</div>
+        <h2 style="border:0;padding:0">恭喜结业！</h2>
+        <p>你已完成《零基础 Vibe Coding 实战营》的导言（第 0 节）+ 必做 14 章（第 1–10、12–15 章）；第 11 章为可选加速包，跳过也达标。你已走完从"生成网站"到"部署上线"的完整学习路径。</p>
+        <p style="color:var(--accent2);font-weight:700">Vibe Coder · 入门认证（自学达成）</p>
+      </div>
+
+      <div class="tip good" id="gradTip" style="display:none"><b>最后一句真心话：</b>Vibe Coding 不会让你瞬间变成工程师，但会让你从"被技术拒绝的人"变成"能用技术实现想法的人"。这份自由，值得继续玩下去。</div>
+      <button class="btn done-btn" onclick="markDone(15)">✓ 完成全部课程</button>
+    </div>
+  </section>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+<nav class="bottomnav">
+  <button id="prevCh" onclick="go(curId-1)">← 上一章</button>
+  <button id="menuBtn" onclick="toggleMenu()">📑 目录</button>
+  <button id="nextCh" onclick="go(curId+1)">下一章 →</button>
+</nav>
+<div id="chapMenu" class="chapmenu"></div>
+<div id="chapOverlay" class="chapoverlay" onclick="toggleMenu()"></div>
+
+<!-- 沙盒默认代码 -->
+<script type="text/plain" id="defaultCode"><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  body{font-family:sans-serif;margin:0;background:#f5f7ff;color:#222}
+  .hero{background:#7c8cff;color:#fff;padding:48px 24px;text-align:center}
+  h1{margin:0;font-size:36px}
+  p.sub{margin:8px 0 0;opacity:.9}
+  .card{background:#fff;border-radius:16px;padding:20px;margin:20px auto;max-width:640px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
+  .row{display:flex;gap:16px}
+  .row .card{flex:1}
+</style>
+</head>
+<body>
+  <div class="hero">
+    <h1>林小满</h1>
+    <p class="sub">想转行做产品经理的应届生</p>
+  </div>
+  <div class="card">
+    <h3>关于我</h3>
+    <p>做过校园公众号，会做数据分析，热爱用户研究。</p>
+  </div>
+  <div class="row">
+    <div class="card"><h3>技能一</h3><p>数据分析</p></div>
+    <div class="card"><h3>技能二</h3><p>用户研究</p></div>
+  </div>
+</body>
+</html></script>
+
+<script>
+  /* ---------- 章节数据 ---------- */
+  const chapters = [
+    {id:0, title:"课程介绍（导言）", dur:"—"},
+    {id:1, title:"第1章 课程导论", dur:"10′"},
+    {id:2, title:"第2章 计算机常识", dur:"12′"},
+    {id:3, title:"第3章 零安装起步", dur:"8′"},
+    {id:4, title:"第4章 工具全景对比", dur:"10′"},
+    {id:5, title:"第5章 写好 Prompt", dur:"10′"},
+    {id:6, title:"第6章 实战① 生成作品集", dur:"10′"},
+    {id:7, title:"第7章 读懂 HTML", dur:"10′"},
+    {id:8, title:"第8章 读懂 CSS", dur:"12′"},
+    {id:9, title:"第9章 读懂 JS", dur:"10′"},
+    {id:10, title:"第10章 借鉴开源教程", dur:"10′"},
+    {id:11, title:"第11章 实战② 开源模板（可选）", dur:"12′"},
+    {id:12, title:"第12章 迭代升级", dur:"10′"},
+    {id:13, title:"第13章 专业化 SEO/域名", dur:"10′"},
+    {id:14, title:"第14章 免费部署上线", dur:"10′"},
+    {id:15, title:"第15章 调试避坑结业", dur:"12′"}
+  ];
+  const KEY="vibe_course_v2";
+  let done = JSON.parse(localStorage.getItem(KEY)||"[]");
+
+  const navlist=document.getElementById("navlist");
+  chapters.forEach(c=>{
+    const li=document.createElement("li");
+    li.dataset.id=c.id;
+    const num = c.id===0 ? "•" : c.id;
+    li.innerHTML=`<button onclick="go(${c.id})"><span class="num">${num}</span><span class="txt">${c.title}</span><span class="dur">${c.dur}</span></button>`;
+    navlist.appendChild(li);
+  });
+
+  let curId=0;
+  function go(id){
+    id=Math.max(0,Math.min(15,id));
+    curId=id;
+    const m=document.getElementById("chapMenu"); if(m) m.classList.remove("open");
+    document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+    const sec=document.getElementById("s"+id);
+    if(sec) sec.classList.add("active");
+    document.querySelectorAll("#navlist li").forEach(li=>{
+      const lid=+li.dataset.id;
+      li.classList.toggle("active", lid===id);
+      li.classList.toggle("done", done.includes(lid) && lid!==0);
+    });
+    window.scrollTo({top:0,behavior:"smooth"});
+    document.getElementById("prevCh").disabled = id<=0;
+    document.getElementById("nextCh").disabled = id>=15;
+    updateBar();
+  }
+  function markDone(id){
+    if(!done.includes(id)) done.push(id);
+    localStorage.setItem(KEY,JSON.stringify(done));
+    toast("✓ 已保存，进度更新");
+    if(id===15 && done.filter(x=>x!==0 && x!==11).length===14){ showCert(); }
+    go(Math.min(id+1,15));
+  }
+  function updateBar(){
+    const total=14; // 必做章（第 11 章为可选，不计入）
+    const reqDone=done.filter(id=>id!==0 && id!==11).length;
+    const pct=Math.min(100,Math.round(reqDone/total*100));
+    document.getElementById("bar").style.width=pct+"%";
+    document.getElementById("pct").textContent=`进度 ${reqDone} / ${total}（第 11 章可选） · ${pct}%`;
+    document.querySelectorAll("#navlist li").forEach(li=>{
+      const lid=+li.dataset.id;
+      li.classList.toggle("done", done.includes(lid) && lid!==0);
+    });
+    if(reqDone===total) showCert();
+  }
+  function showCert(){
+    const c=document.getElementById("cert"); const t=document.getElementById("gradTip");
+    if(c) c.style.display="block";
+    if(t) t.style.display="block";
+  }
+  document.getElementById("reset").onclick=()=>{
+    if(confirm("确定重置全部学习进度？")){done=[];localStorage.removeItem(KEY);updateBar();go(0);toast("已重置");}
+  };
+
+  /* ---------- toast ---------- */
+  let tt;
+  function toast(msg){
+    const t=document.getElementById("toast");
+    t.textContent=msg;t.classList.add("show");
+    clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),1800);
+  }
+
+  /* ---------- prompt 生成器 ---------- */
+  function genPrompt(){
+    const name=document.getElementById("f_name").value.trim();
+    const role=document.getElementById("f_role").value.trim();
+    const points=(document.getElementById("f_points").value||"").split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+    const style=document.getElementById("f_style").value;
+    const contact=document.getElementById("f_contact").value.trim();
+    if(!name){toast("请先在上方填一下你的名字再生成～");return;}
+    let p=`帮我做一个个人作品集 / 简历单页网站。\n`;
+    p+=`我是${name}`+(role?`，${role}`:'')+`。\n`;
+    p+=`页面要包含这些模块：顶部自我介绍（姓名+一句话定位）、关于我、技能/亮点、联系方式。`;
+    if(points.length){p+=`我的亮点：${points.join("、")}。`;}
+    p+=`\n风格要求：${style}。`;
+    p+=`\n技术要求：单个 HTML 页面（可内联 CSS），手机和电脑都要好看（响应式），整体简洁专业，直接能打开预览。`;
+    if(contact){p+=`\n联系方式：${contact}。`;}
+    document.getElementById("promptOut").textContent=p;
+  }
+  function copyPrompt(){
+    const t=document.getElementById("promptOut").textContent;
+    if(t.startsWith("填写")){toast("请先生成需求文案");return;}
+    copyText(t);
+  }
+
+  /* ---------- 技术栈生成器 ---------- */
+  function genStack(){
+    const sel=Array.from(document.querySelectorAll(".ts:checked")).map(e=>e.value);
+    if(!sel.length){toast("请先勾选至少一项技术再生成～");return;}
+    let p=`请基于以下技术栈为我生成一个更专业的个人作品集网站：\n`;
+    p+=`技术：${sel.join("、")}。\n`;
+    p+=`要求：结构清晰、响应式、风格现代简洁，并帮我填入我的真实信息（发送前请把括号里的占位换成你自己的：姓名（你的名字）、定位（如想转行做产品经理））。\n`;
+    p+=`请说明每个文件的作用，方便我后续维护。`;
+    document.getElementById("stackOut").textContent=p;
+  }
+  function copyStack(){
+    const t=document.getElementById("stackOut").textContent;
+    if(t.startsWith("勾选")){toast("请先勾选技术并点生成进阶需求");return;}
+    copyText(t);
+  }
+
+  /* ---------- 实时代码沙盒 ---------- */
+  const sb=document.getElementById("sb");
+  const preview=document.getElementById("preview");
+  const hint=document.getElementById("sbHint");
+  sb.value=document.getElementById("defaultCode").textContent;
+  function render(){ preview.srcdoc=sb.value; }
+  sb.addEventListener("input",render);
+  render();
+
+  const challengeMap={
+    title:"把 <h1>林小满</h1> 里的文字换成你自己的名字。（在代码框里用电脑 Ctrl+F、手机用键盘的搜索功能，找『林小满』这三个字再改，会快很多）",
+    color:"在 <style> 里找到 body{…background:#f5f7ff} 这一行，把颜色值改成蓝色（如 #2b6cff），看整页背景变蓝。",
+    card:"找到第一个 .card 的样式，加上 border-radius:24px; 看卡片变圆润。",
+    flex:"在 <style> 里找到 .row{display:flex}，把 display:flex 改成 display:block，改完代码框、预览框会立刻变——看两张卡片从上到下竖排；再改回 flex 看它们横排等宽。这就是 flex 布局的开关，不用点任何按钮。",
+    reset:""
+  };
+  function challenge(type){
+    if(type==="reset"){sb.value=document.getElementById("defaultCode").textContent;render();hint.textContent="已恢复初始代码，重新试试吧。";return;}
+    hint.textContent="挑战："+challengeMap[type];
+    toast("👇 按上面的提示在代码框里改一改，预览会即时变");
+  }
+  function copyText(t){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(()=>toast("📋 已复制")).catch(()=>fallbackCopy(t));
+    } else { fallbackCopy(t); }
+  }
+  function fallbackCopy(t){
+    try{
+      const ta=document.createElement("textarea");
+      ta.value=t; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      const ok=document.execCommand("copy");
+      document.body.removeChild(ta);
+      toast(ok?"📋 已复制（如没反应请手动长按选择）":"请手动长按选择文字复制");
+    }catch(e){ toast("请手动长按选择文字复制"); }
+  }
+  function copyCode(){
+    copyText(sb.value);
+  }
+
+  /* ---------- 小测验（第2章） ---------- */
+  function buildQuiz(containerId, data){
+    const box=document.getElementById(containerId);
+    if(!box) return;
+    data.forEach((item,i)=>{
+      const wrap=document.createElement("div");
+      wrap.className="quiz-q";
+      let html=`<div><b>Q${i+1}. ${item.q}</b></div><div class="opts">`;
+      item.opts.forEach((o,j)=>{ html+=`<div class="opt" data-q="${i}" data-a="${j}">${o}</div>`;});
+      html+=`</div><div class="fb" id="${containerId}_fb${i}"></div>`;
+      wrap.innerHTML=html;
+      box.appendChild(wrap);
+    });
+    box.querySelectorAll(".opt").forEach(el=>{
+      el.onclick=()=>{
+        const qi=+el.dataset.q, ai=+el.dataset.a;
+        const opts=box.querySelectorAll(`.opt[data-q="${qi}"]`);
+        opts.forEach(o=>o.classList.remove("correct","wrong"));
+        if(ai===data[qi].ans){
+          el.classList.add("correct");
+          document.getElementById(`${containerId}_fb${qi}`).innerHTML='<span style="color:var(--good)">✓ '+data[qi].fb+'</span>';
+        }else{
+          el.classList.add("wrong");
+          opts[data[qi].ans].classList.add("correct");
+          document.getElementById(`${containerId}_fb${qi}`).innerHTML='<span style="color:var(--bad)">✗ 再想想～正确答案已标绿。</span>';
+        }
+      };
+    });
+  }
+  buildQuiz("quiz1",[
+    {q:"网页本质上是什么？",opts:["一段视频","浏览器向服务器要来并渲染的 HTML 文件","一个 App","一张图片"],ans:1,fb:"对。网页是浏览器获取并绘制的 HTML 文档。"},
+    {q:"想让页面颜色更好看，应该改哪种代码？",opts:["HTML","CSS","JS","域名"],ans:1,fb:"正确。'改好看→动 CSS'。"},
+    {q:"'localhost' 通常指？",opts:["别人的网站","在你自己电脑本地运行/预览","一种编程语言","一个域名商"],ans:1,fb:"正确。localhost 是本地预览，还没上线。"}
+  ]);
+
+  /* 目录浮层（手机端也能跳任意章 / 重置） */
+  function toggleMenu(){ document.getElementById("chapMenu").classList.toggle("open"); }
+  function buildMenu(){
+    const m=document.getElementById("chapMenu");
+    chapters.forEach(c=>{
+      const b=document.createElement("button");
+      const label=(c.id===0?"• ":c.id+". ")+c.title;
+      b.textContent=label;
+      b.onclick=()=>{ go(c.id); m.classList.remove("open"); };
+      m.appendChild(b);
+    });
+    const r=document.createElement("button");
+    r.className="reset"; r.textContent="重置学习进度";
+    r.onclick=()=>{ if(confirm("确定重置全部学习进度？")){done=[];localStorage.removeItem(KEY);updateBar();go(0);m.classList.remove("open");toast("已重置");} };
+    m.appendChild(r);
+  }
+
+  /* init */
+  document.querySelectorAll(".checklist li").forEach(li=>{ li.onclick=()=>li.classList.toggle("checked"); });
+  updateBar();
+  buildMenu();
+  go(0);
+</script>
+</body>
+</html>
